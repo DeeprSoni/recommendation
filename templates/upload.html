@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Upload CSV</title>
+    <!-- Bootstrap CSS CDN -->
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: black;
+            color: white;
+            font-family: 'Arial', sans-serif;
+        }
+
+        .container {
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .btn-custom {
+            background-color: #606c76;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            transition: 0.3s ease;
+        }
+
+        .btn-custom:hover {
+            background-color: #4a5359;
+        }
+
+        .input-custom {
+            background-color: #f2f2f2;
+            border: none;
+            border-radius: 5px;
+            padding: 10px;
+            width: 100%;
+        }
+
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="col-md-6">
+            <!-- Form for File Upload -->
+            <form action="/" method="post" enctype="multipart/form-data">
+                <div class="form-group">
+                    <label for="csvfile">Upload your CSV (or skip to use the default):</label>
+                    <input type="file" id="csvfile" name="csvfile" class="input-custom form-control">
+                </div>
+                <button type="submit" class="btn btn-custom">Upload and Process</button>
+            </form>
+            <br>
+            <!-- Form for Default CSV -->
+            <form action="/use-default" method="get">
+                <button type="submit" class="btn btn-custom">Use Default CSV and Process</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Optional: jQuery and Bootstrap JS CDN -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+
+
+</html>

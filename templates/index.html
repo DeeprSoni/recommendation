@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Get Recommendations</title>
+    <!-- Bootstrap CSS CDN -->
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: black;
+            color: white;
+            font-family: 'Arial', sans-serif;
+        }
+
+        .container {
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .btn-custom {
+            background-color: #606c76;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            transition: 0.3s ease;
+        }
+
+        .btn-custom:hover {
+            background-color: #4a5359;
+        }
+
+        .input-custom {
+            background-color: #f2f2f2;
+            border: none;
+            border-radius: 5px;
+            padding: 10px;
+            width: 100%;
+        }
+
+        h2 {
+            margin-top: 30px; /* More space before the Recommendations text */
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="col-md-6">
+            <form action="/recommend" method="post">
+                <div class="form-group">
+                    <label for="item">Enter the item:</label>
+                    <input type="text" id="item" name="item" class="input-custom form-control" required>
+                </div>
+                <button type="submit" class="btn btn-custom">Get Recommendations</button>
+            </form>
+
+            <!-- Display Recommendations if they exist -->
+            {% if recommended %}
+            <h2>Recommendation is {{ recommended[0] }}</h2>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Optional: jQuery and Bootstrap JS CDN -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+
+</html>
