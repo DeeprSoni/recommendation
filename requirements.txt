@@ -1,0 +1,12 @@
+
+---
+
+### **Updated `requirements.txt`**
+
+Here’s a more detailed and specific `requirements.txt` file for your project, based on common dependencies for scikit-learn projects:
+
+```text
+scikit-learn==1.2.2
+numpy==1.24.3
+pandas==1.5.3
+pytest==7.4.0
