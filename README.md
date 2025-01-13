@@ -178,8 +178,8 @@ This project is licensed under the MIT License. See the [LICENSE](LICENSE) file 
 ## 📫 Contact
 
 For questions, feedback, or feature requests:
-- Email: **your_email@example.com**
-- GitHub: [Your Username](https://github.com/your_username)
+- Email: **deep@deepsoni.com**
+- GitHub: DeeprSoni (https://github.com/DeeprSoni)
 
 ---
 
