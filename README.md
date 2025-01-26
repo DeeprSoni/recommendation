@@ -81,9 +81,9 @@ The application will be accessible at `http://127.0.0.1:5000`.
 The AI Recommendation System is powered by **cosine similarity**, a widely used method in recommendation systems. Cosine similarity measures how similar two vectors are, based on the angle between them in a multi-dimensional space.
 
 ### Formula
-\[
-\text{Cosine Similarity} = \frac{\mathbf{A} \cdot \mathbf{B}}{\|\mathbf{A}\| \|\mathbf{B}\|}
-\]
+$$ 
+\text{Cosine Similarity} = \frac{\mathbf{A} \cdot \mathbf{B}}{|\mathbf{A}| |\mathbf{B}|}
+$$
 
 ### How It Works
 
