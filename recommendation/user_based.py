@@ -8,3 +8,9 @@ def create_user_similarity_matrix(data):
     similarity_matrix = cosine_similarity(sparse_matrix)  # Compute similarity
 
     return pd.DataFrame(similarity_matrix, index=data.index, columns=data.index)
+def compute_user_score(user_id, data):
+    """Computes user-based similarity scores."""
+    similarity_matrix = create_user_similarity_matrix(data)
+    if user_id not in similarity_matrix.index:
+        return {}
+    return similarity_matrix[user_id].to_dict()
