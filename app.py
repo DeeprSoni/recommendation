@@ -51,11 +51,20 @@ def get_recommendation():
         if user_id:  # If user ID is provided, get user-based recommendations
             user_id = int(user_id)
             recommended = compute_user_score(user_id, data)
-            recommended = sorted(recommended.items(), key=lambda x: x[1], reverse=True)[:5]  # Get top 5
+
+            # Fix: Ensure recommended is a dictionary before calling .items()
+            if isinstance(recommended, dict):
+                recommended = sorted(recommended.items(), key=lambda x: x[1], reverse=True)[:5]
+            else:
+                recommended = recommended[:5]  # If it's a list, just slice the top 5
 
         if item_name:  # If item name is provided, get item-based recommendations
             item_recommendations = compute_item_score(item_name, data)
-            item_recommendations = sorted(item_recommendations.items(), key=lambda x: x[1], reverse=True)[:5]  # Top 5
+
+            if isinstance(item_recommendations, dict):
+                item_recommendations = sorted(item_recommendations.items(), key=lambda x: x[1], reverse=True)[:5]
+            else:
+                item_recommendations = item_recommendations[:5]  
 
             if recommended:
                 recommended.extend(item_recommendations)  # Merge results if both user_id & item exist
@@ -64,6 +73,7 @@ def get_recommendation():
                 recommended = item_recommendations  # If only item is entered, use item recommendations
 
     return render_template("index.html", recommended=recommended, user_id=user_id, item_name=item_name)
+
 
 if __name__ == "__main__":
     app.run(debug=True)
