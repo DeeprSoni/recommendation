@@ -3,6 +3,8 @@ import pandas as pd
 import os
 from recommendation.data_handler import load_dataset, copy_default_dataset
 from recommendation.hybrid import hybrid_recommendation
+from recommendation.similarity import compute_item_score
+from recommendation.user_based import compute_user_score
 
 # Get the absolute path to the directory containing app.py
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -43,9 +45,23 @@ def get_recommendation():
     item_name = None
 
     if request.method == "POST":
-        user_id = int(request.form["user_id"])
-        item_name = request.form["item_name"]
-        recommended = hybrid_recommendation(user_id, item_name, data)
+        user_id = request.form.get("user_id")  # Allow empty input
+        item_name = request.form.get("item_name")  # Allow empty input
+
+        if user_id:  # If user ID is provided, get user-based recommendations
+            user_id = int(user_id)
+            recommended = compute_user_score(user_id, data)
+            recommended = sorted(recommended.items(), key=lambda x: x[1], reverse=True)[:5]  # Get top 5
+
+        if item_name:  # If item name is provided, get item-based recommendations
+            item_recommendations = compute_item_score(item_name, data)
+            item_recommendations = sorted(item_recommendations.items(), key=lambda x: x[1], reverse=True)[:5]  # Top 5
+
+            if recommended:
+                recommended.extend(item_recommendations)  # Merge results if both user_id & item exist
+                recommended = list(set(recommended))[:5]  # Deduplicate and limit to 5 results
+            else:
+                recommended = item_recommendations  # If only item is entered, use item recommendations
 
     return render_template("index.html", recommended=recommended, user_id=user_id, item_name=item_name)
 
