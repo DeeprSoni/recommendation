@@ -2,7 +2,7 @@ from flask import Flask, render_template, request, redirect, url_for
 import pandas as pd
 import os
 from recommendation.data_handler import load_dataset, copy_default_dataset
-from recommendation.similarity import get_recommendation_for_item
+from recommendation.hybrid import hybrid_recommendation
 
 # Get the absolute path to the directory containing app.py
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -20,9 +20,8 @@ def index():
 
         # Check if a file was uploaded
         if csv_file:
-            csv_file.save(CSV_PATH)  # Save the uploaded CSV to a permanent location
+            csv_file.save(CSV_PATH)  # Save the uploaded CSV
         else:
-            # Use the default CSV if no file was uploaded
             copy_default_dataset(DEFAULT_CSV_PATH, CSV_PATH)
 
         return redirect(url_for('get_recommendation'))
@@ -40,13 +39,15 @@ def get_recommendation():
     data = load_dataset(CSV_PATH)  # Read the saved CSV file
 
     recommended = None
-    item_to_recommend = None
+    user_id = None
+    item_name = None
 
     if request.method == "POST":
-        item_to_recommend = request.form["item"]
-        recommended = [get_recommendation_for_item(item_to_recommend, data)]
+        user_id = int(request.form["user_id"])
+        item_name = request.form["item_name"]
+        recommended = hybrid_recommendation(user_id, item_name, data)
 
-    return render_template("index.html", recommended=recommended, item=item_to_recommend)
+    return render_template("index.html", recommended=recommended, user_id=user_id, item_name=item_name)
 
 if __name__ == "__main__":
     app.run(debug=True)
