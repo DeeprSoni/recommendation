@@ -1,8 +1,15 @@
 import pandas as pd
+import numpy as np
 from sklearn.metrics.pairwise import cosine_similarity
 from scipy.sparse import csr_matrix
-from recommendation.similarity import create_sparse_similarity_matrix
-from recommendation.user_based import create_user_similarity_matrix
+from recommendation.user_based import create_user_similarity_matrix  # Keep this import
+
+def create_sparse_similarity_matrix(data):
+    """Creates a sparse cosine similarity matrix for items."""
+    sparse_matrix = csr_matrix(data.T)  # Transpose to make items as rows
+    similarity_matrix = cosine_similarity(sparse_matrix)
+
+    return pd.DataFrame(similarity_matrix, index=data.columns, columns=data.columns)
 
 def compute_item_score(item_name, data):
     """Computes item-based similarity scores."""
