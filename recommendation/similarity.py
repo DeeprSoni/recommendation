@@ -14,3 +14,17 @@ def get_recommendation_for_item(item_name, data):
 
     # Return the top recommendation
     return recommended_items.head(1).index.tolist()[0]
+    
+def create_sparse_similarity_matrix(data):
+    """Creates a sparse cosine similarity matrix for items."""
+    sparse_matrix = csr_matrix(data.T)  # Transpose to make items as rows
+    similarity_matrix = cosine_similarity(sparse_matrix)
+
+    return pd.DataFrame(similarity_matrix, index=data.columns, columns=data.columns)
+
+def compute_item_score(item_name, data):
+    """Computes item-based similarity scores."""
+    similarity_matrix = create_sparse_similarity_matrix(data)
+    if item_name not in similarity_matrix.columns:
+        return {}
+    return similarity_matrix[item_name].to_dict()
