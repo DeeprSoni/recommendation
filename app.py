@@ -2,7 +2,9 @@ from flask import Flask, render_template, request, redirect, url_for
 import pandas as pd
 import os
 from recommendation.data_handler import load_dataset, copy_default_dataset
-from recommendation.similarity import get_recommendation_for_item
+from recommendation.hybrid import hybrid_recommendation
+from recommendation.similarity import compute_item_score
+from recommendation.user_based import compute_user_score
 
 # Get the absolute path to the directory containing app.py
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -20,9 +22,8 @@ def index():
 
         # Check if a file was uploaded
         if csv_file:
-            csv_file.save(CSV_PATH)  # Save the uploaded CSV to a permanent location
+            csv_file.save(CSV_PATH)  # Save the uploaded CSV
         else:
-            # Use the default CSV if no file was uploaded
             copy_default_dataset(DEFAULT_CSV_PATH, CSV_PATH)
 
         return redirect(url_for('get_recommendation'))
@@ -40,13 +41,39 @@ def get_recommendation():
     data = load_dataset(CSV_PATH)  # Read the saved CSV file
 
     recommended = None
-    item_to_recommend = None
+    user_id = None
+    item_name = None
 
     if request.method == "POST":
-        item_to_recommend = request.form["item"]
-        recommended = [get_recommendation_for_item(item_to_recommend, data)]
+        user_id = request.form.get("user_id")  # Allow empty input
+        item_name = request.form.get("item_name")  # Allow empty input
 
-    return render_template("index.html", recommended=recommended, item=item_to_recommend)
+        if user_id:  # If user ID is provided, get user-based recommendations
+            user_id = int(user_id)
+            recommended = compute_user_score(user_id, data)
+
+            # Fix: Ensure recommended is a dictionary before calling .items()
+            if isinstance(recommended, dict):
+                recommended = sorted(recommended.items(), key=lambda x: x[1], reverse=True)[:5]
+            else:
+                recommended = recommended[:5]  # If it's a list, just slice the top 5
+
+        if item_name:  # If item name is provided, get item-based recommendations
+            item_recommendations = compute_item_score(item_name, data)
+
+            if isinstance(item_recommendations, dict):
+                item_recommendations = sorted(item_recommendations.items(), key=lambda x: x[1], reverse=True)[:5]
+            else:
+                item_recommendations = item_recommendations[:5]  
+
+            if recommended:
+                recommended.extend(item_recommendations)  # Merge results if both user_id & item exist
+                recommended = list(set(recommended))[:5]  # Deduplicate and limit to 5 results
+            else:
+                recommended = item_recommendations  # If only item is entered, use item recommendations
+
+    return render_template("index.html", recommended=recommended, user_id=user_id, item_name=item_name)
+
 
 if __name__ == "__main__":
     app.run(debug=True)
