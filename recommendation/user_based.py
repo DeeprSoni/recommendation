@@ -22,8 +22,9 @@ def compute_user_score(user_id, data):
     recommended_items = {}
     for similar_user in similar_users:
         for item, rating in data.loc[similar_user].items():
-            if rating > 0:  # Assuming a rating system
+            if rating > 0 and item != "Order_ID":  # ✅ Exclude Order_ID
                 recommended_items[item] = recommended_items.get(item, 0) + rating
 
     # Return top 5 recommended items
     return sorted(recommended_items.items(), key=lambda x: x[1], reverse=True)[:5]
+
