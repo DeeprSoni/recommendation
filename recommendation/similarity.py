@@ -1,5 +1,5 @@
 import pandas as pd
-from recommendation.sparse_matrix import create_sparse_similarity_matrix
+from recommendation.hybrid import create_sparse_similarity_matrix
 
 def get_recommendation_for_item(item_name, data):
     """Gets the most similar item for the given item name using sparse matrices."""
