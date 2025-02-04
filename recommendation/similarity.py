@@ -25,6 +25,14 @@ def create_sparse_similarity_matrix(data):
 def compute_item_score(item_name, data):
     """Computes item-based similarity scores."""
     similarity_matrix = create_sparse_similarity_matrix(data)
+    
     if item_name not in similarity_matrix.columns:
         return {}
-    return similarity_matrix[item_name].to_dict()
+
+    item_similarities = similarity_matrix[item_name]
+
+    # Remove 'Order_ID' from recommendations
+    recommended_items = item_similarities.drop(labels=["Order_ID"], errors="ignore").sort_values(ascending=False)
+
+    # Return only the top most similar items
+    return recommended_items.head(5).to_dict()
