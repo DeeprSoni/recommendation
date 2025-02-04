@@ -1,15 +1,9 @@
 import pandas as pd
-from sklearn.metrics.pairwise import cosine_similarity
-
-
-def create_similarity_matrix(data):
-    """Creates a cosine similarity matrix for items in the dataset."""
-    similarity_matrix = cosine_similarity(data.T)  # Note the transpose here
-    return pd.DataFrame(similarity_matrix, index=data.columns, columns=data.columns)
+from recommendation.sparse_matrix import create_sparse_similarity_matrix
 
 def get_recommendation_for_item(item_name, data):
-    """Gets the most similar item for the given item name."""
-    similarity_matrix = create_similarity_matrix(data)
+    """Gets the most similar item for the given item name using sparse matrices."""
+    similarity_matrix = create_sparse_similarity_matrix(data)
     item_similarities = similarity_matrix[item_name]
 
     # Sort items by similarity score
