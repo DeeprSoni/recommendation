@@ -24,7 +24,7 @@ def create_sparse_similarity_matrix(data):
 
 def compute_item_score(item_name, data):
     """Computes item-based similarity scores while excluding the input item."""
-    
+
     similarity_matrix = create_sparse_similarity_matrix(data)
 
     if item_name not in similarity_matrix.columns:
@@ -35,14 +35,11 @@ def compute_item_score(item_name, data):
     # ✅ Remove the input item and Order_ID
     recommended_items = item_similarities.drop(labels=[item_name, "Order_ID"], errors="ignore").sort_values(ascending=False)
 
-    # ✅ Drop NaN values to prevent blank results
+    # ✅ Drop NaN values and low-score recommendations
     recommended_items = recommended_items.dropna()
+    recommended_items = recommended_items[recommended_items > 0.1]  # ✅ Filter out weak correlations
 
-    # ✅ Ensure at least 5 recommendations exist; if not, return all available
-    top_recommendations = recommended_items.head(5).to_dict()
-    
-    if len(top_recommendations) < 5:
-        print(f"[WARNING] Limited recommendations for item: {item_name} → Returning {len(top_recommendations)} items.")
+    # ✅ Return top 5 recommended items
+    return recommended_items.head(5).to_dict()
 
-    return top_recommendations
 
