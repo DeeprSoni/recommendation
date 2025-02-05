@@ -23,7 +23,7 @@ def create_sparse_similarity_matrix(data):
     return pd.DataFrame(similarity_matrix, index=data.columns, columns=data.columns)
 
 def compute_item_score(item_name, data):
-    """Computes item-based similarity scores and removes the input item."""
+    """Computes item-based similarity scores while excluding the input item."""
     
     similarity_matrix = create_sparse_similarity_matrix(data)
 
@@ -32,11 +32,17 @@ def compute_item_score(item_name, data):
 
     item_similarities = similarity_matrix[item_name]
 
-    # ✅ Remove the input item and Order_ID from recommendations
+    # ✅ Remove the input item and Order_ID
     recommended_items = item_similarities.drop(labels=[item_name, "Order_ID"], errors="ignore").sort_values(ascending=False)
 
-    # ✅ Filter out NaN values
+    # ✅ Drop NaN values to prevent blank results
     recommended_items = recommended_items.dropna()
 
-    # ✅ Return top 5 recommended items
-    return recommended_items.head(5).to_dict()
+    # ✅ Ensure at least 5 recommendations exist; if not, return all available
+    top_recommendations = recommended_items.head(5).to_dict()
+    
+    if len(top_recommendations) < 5:
+        print(f"[WARNING] Limited recommendations for item: {item_name} → Returning {len(top_recommendations)} items.")
+
+    return top_recommendations
+
