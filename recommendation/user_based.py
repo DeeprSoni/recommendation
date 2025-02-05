@@ -9,21 +9,19 @@ def create_user_similarity_matrix(data):
 
     return pd.DataFrame(similarity_matrix, index=data.index, columns=data.index)
 def compute_user_score(user_id, data):
-    """Returns item recommendations based on similar users."""
+    """Returns item recommendations based on similar users' behaviors."""
     similarity_matrix = create_user_similarity_matrix(data)
 
     if user_id not in similarity_matrix.index:
         return {}
 
-    # Get the most similar users (excluding the user itself)
+    # ✅ Get similar users (excluding the user itself)
     similar_users = similarity_matrix[user_id].sort_values(ascending=False).index.tolist()
-    
-    if user_id in similar_users:
-        similar_users.remove(user_id)  # ✅ Remove the input user
-    
+    similar_users = [u for u in similar_users if u != user_id]  # Remove self
+
     recommended_items = {}
 
-    # ✅ Find items that similar users have interacted with
+    # ✅ Find items similar users have interacted with
     for similar_user in similar_users:
         for item, rating in data.loc[similar_user].items():
             if rating > 0 and item != "Order_ID":  # ✅ Exclude Order_ID
