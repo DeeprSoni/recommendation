@@ -14,6 +14,7 @@ CSV_PATH = os.path.join(BASE_DIR, "uploaded_data.csv")
 DEFAULT_CSV_PATH = os.path.join(BASE_DIR, "default_data.csv")
 
 app = Flask(__name__)
+CORS(app)
 
 @app.route("/", methods=["GET", "POST"])
 def index():
@@ -74,6 +75,28 @@ def get_recommendation():
 
     return render_template("index.html", recommended=recommended, user_id=user_id, item_name=item_name)
 
+@app.route("/api/recommend", methods=["GET"])
+def api_recommend():
+    """
+    API endpoint to get recommendations.
+    Parameters:
+        - user_id (optional): ID of the user.
+        - item_name (optional): Name of the item.
+    Returns:
+        - JSON response with recommended items.
+    """
 
+    data = load_dataset(CSV_PATH)  # Load dataset
+
+    user_id = request.args.get("user_id", type=int)
+    item_name = request.args.get("item_name", type=str)
+
+    if not user_id and not item_name:
+        return jsonify({"error": "At least one parameter (user_id or item_name) is required"}), 400
+
+    recommended = hybrid_recommendation(user_id, item_name, data)
+
+    return jsonify({"recommendations": recommended})
+    
 if __name__ == "__main__":
     app.run(debug=True)
