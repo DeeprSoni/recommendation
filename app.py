@@ -98,6 +98,14 @@ def api_recommend():
     recommended = hybrid_recommendation(user_id, item_name, data)
 
     return jsonify({"recommendations": recommended})
+@app.route("/api/debug", methods=["GET"])
+def debug_data():
+    """API endpoint to check data structure before making recommendations."""
+    data = load_dataset(CSV_PATH)  # Load dataset
+    return jsonify({
+        "columns": list(data.columns),
+        "sample_data": data.head(5).to_dict()
+    })
     
 if __name__ == "__main__":
     app.run(debug=True)
