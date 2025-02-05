@@ -17,17 +17,17 @@ def compute_user_score(user_id, data):
 
     # Get the most similar users (excluding the user itself)
     similar_users = similarity_matrix[user_id].sort_values(ascending=False).index.tolist()
-    similar_users.remove(user_id)  # ✅ Remove the input user
-
+    
+    if user_id in similar_users:
+        similar_users.remove(user_id)  # ✅ Remove the input user
+    
     recommended_items = {}
 
-    # Find items liked by similar users
+    # ✅ Find items that similar users have interacted with
     for similar_user in similar_users:
         for item, rating in data.loc[similar_user].items():
             if rating > 0 and item != "Order_ID":  # ✅ Exclude Order_ID
                 recommended_items[item] = recommended_items.get(item, 0) + rating
 
-    # Sort and return top 5 recommended items
+    # ✅ Sort and return top 5 recommended items
     return sorted(recommended_items.items(), key=lambda x: x[1], reverse=True)[:5]
-
-
