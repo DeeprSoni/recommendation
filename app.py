@@ -5,6 +5,7 @@ from recommendation.data_handler import load_dataset, copy_default_dataset
 from recommendation.hybrid import hybrid_recommendation
 from recommendation.similarity import compute_item_score
 from recommendation.user_based import compute_user_score
+from flask_cors import CORS  # Allows cross-origin requests
 
 # Get the absolute path to the directory containing app.py
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
