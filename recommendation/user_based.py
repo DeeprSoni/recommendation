@@ -12,19 +12,19 @@ def compute_user_score(user_id, data):
     """Returns item recommendations based on similar users' behaviors."""
     similarity_matrix = create_user_similarity_matrix(data)
 
-    if user_id not in similarity_matrix.index:
+    if user_id not in data.index:
         return {}
 
-    # ✅ Get similar users (excluding the user itself)
-    similar_users = similarity_matrix[user_id].sort_values(ascending=False).index.tolist()
-    similar_users = [u for u in similar_users if u != user_id]  # Remove self
+    # ✅ Get similar users based on actual user IDs, not DataFrame index
+    similar_users = similarity_matrix.loc[user_id].sort_values(ascending=False).index.tolist()
+    similar_users = [u for u in similar_users if u != user_id]  # ✅ Remove self
 
     recommended_items = {}
 
     # ✅ Find items similar users have interacted with
     for similar_user in similar_users:
         for item, rating in data.loc[similar_user].items():
-            if rating > 0 and item != "Order_ID":  # ✅ Exclude Order_ID
+            if rating > 0:
                 recommended_items[item] = recommended_items.get(item, 0) + rating
 
     # ✅ Sort and return top 5 recommended items
