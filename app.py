@@ -1,9 +1,10 @@
 from flask import Flask, render_template, request, redirect, url_for, jsonify
 import pandas as pd
 import os
-from hybrid import hybrid_recommendation
-from similarity import compute_item_score
-from user_based import compute_user_score
+from recommendation.hybrid import hybrid_recommendation
+from recommendation.similarity import compute_item_score
+from recommendation.user_based import compute_user_score
+from recommendation.data_handler import load_dataset  # If needed
 from flask_cors import CORS  # Allows cross-origin requests
 
 app = Flask(__name__)
